@@ -12,11 +12,11 @@ show-news() {
 }
 
 parse-news() {
-    if [[ "$1" =~ "www.cnews.ru" ]]; then
+    if [[ "$1" =~ www.cnews.ru ]]; then
         xq -q '.news_container > :not(div, b, nofollow, noindex, aside, section)' -n
-    elif [[ "$1" =~ "www.opennet.ru" ]]; then
+    elif [[ "$1" =~ www.opennet.ru ]]; then
         xq -q '.chtext > *' -n | iconv -f koi8-r -t utf-8
-    elif [[ "$1" =~ "meduza.io" ]]; then
+    elif [[ "$1" =~ meduza.io ]]; then
         htmlq -r '[data-testid="related-rich-block"]' -r '[data-testid="toolbar"]' \
             -r '[data-testid="material-note"]' '.GeneralMaterial-module-article'
     else
@@ -83,9 +83,9 @@ if [[ "$1" == ls ]]; then
 elif [[ "$1" == get ]]; then
     $0 ls "$2" | sed -n "$(printf "%sp;" "${@:3}")"
 elif [[ "$1" == show ]]; then
-    paste <($0 get "${@:2}") <(printf "%s\n" "${@:3}") | parallel -k --colsep '\t' show-news {1} {2}
+    paste <($0 get "${@:2}") <(printf "%s\n" "${@:3}") | parallel -k --colsep '\t' show-news "{1}" "{2}"
 elif [[ "$1" == list ]]; then
-    $0 ls "$2" | parallel -k show-news {} {#}
+    $0 ls "$2" | parallel -k show-news "{}" "{#}"
 elif [[ "$1" == peek ]]; then
     $0 get "${@:2}" | read-news
 elif [[ "$1" == purge ]]; then
@@ -93,7 +93,7 @@ elif [[ "$1" == purge ]]; then
 elif [[ "$1" == read ]]; then
     $0 peek "${@:2}" && $0 purge "${@:2}"
 elif [[ "$1" == next ]]; then
-    $0 ls "$2" | wc -l | xargs $0 read "$2"
+    $0 ls "$2" | wc -l | xargs "$0" read "$2"
 elif [[ "$1" == update ]]; then
     awk -vP="$2" '$1 == P {print $0}' "$CONFIG" | update-news "$STATEDIR"
 elif [[ "$1" == config ]]; then
