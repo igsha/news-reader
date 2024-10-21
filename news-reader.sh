@@ -57,7 +57,7 @@ update-news() {
         if [[ -e "$DIR/$ID.json" || -e "$1/trash/$NAME-$ID.json" ]]; then
             FILE1="$DIR/$ID.json"
             if [[ ! -e "$FILE1" ]]; then
-                FILE1="$1/trash/$NAME/$ID.json"
+                FILE1="$1/trash/$NAME-$ID.json"
             fi
 
             read -r LINK1 < <(jq -r .link "$FILE1")
